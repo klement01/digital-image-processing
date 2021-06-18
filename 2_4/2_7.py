@@ -27,7 +27,6 @@ def main():
     args = parser.parse_args()
 
     image = cv.imread(args.in_image)
-    assert image is not None, 'invalid image file'
     create_video(args.out_video, image, args.duration)
 
 
