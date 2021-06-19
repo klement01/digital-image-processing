@@ -9,7 +9,7 @@ from matplotlib.figure import Figure
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generates the cumulative histogram of an image.')
+        description=__doc__)
     parser.add_argument(
         '--hist',
         dest='create_regular_histogram',
