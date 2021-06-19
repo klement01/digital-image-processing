@@ -3,6 +3,7 @@
 import argparse
 import cv2 as cv
 import e3_2 as histogram
+import matplotlib.pyplot as plt
 import numpy as np
 
 def main():
@@ -19,7 +20,9 @@ def main():
     parser.add_argument(
         'out_hist',
         metavar='histogram',
-        help='where the histogram will be saved')
+        nargs='?',
+        default=None,
+        help='where the histogram will be saved; if missing, histogram will be shown')
     parser.add_argument(
         'out_image',
         metavar='image',
@@ -33,7 +36,10 @@ def main():
         cv.imwrite(args.out_image, image)
     hist, bin_edges = histogram.histogram_8bit_grayscale(image)
     fig, _ = histogram.custom_histogram_plot(hist, bin_edges)
-    fig.savefig(args.out_hist)
+    if args.out_hist is not None:
+        fig.savefig(args.out_hist)
+    else:
+        plt.show()
 
 
 def random_grayscale_image(resolution: [int, int]) -> np.array:
