@@ -11,6 +11,12 @@ def main():
     parser = argparse.ArgumentParser(
         description='Generates the cumulative histogram of an image.')
     parser.add_argument(
+        '--hist',
+        dest='create_regular_histogram',
+        action='store_true',
+        help='if used, creates a regular histogram '
+            'instead of a cumulative histogram')
+    parser.add_argument(
         'in_image',
         metavar='in',
         help='the image to be processed')
@@ -24,19 +30,28 @@ def main():
     args = parser.parse_args()
     
     image = cv.imread(args.in_image, cv.IMREAD_GRAYSCALE)
-    c_hist, bin_edges = cumulative_histogram(image)
-    fig, _ = cumulative_histogram_plot(c_hist, bin_edges)
+    if args.create_regular_histogram:
+        c_hist, bin_edges = histogram_8bit_grayscale(image)
+    else:
+        c_hist, bin_edges = cumulative_histogram_8bit_grayscale(image)
+    fig, _ = custom_histogram_plot(c_hist, bin_edges)
     if args.out_image is None:
         plt.show()
     else:
         fig.savefig(args.out_image)
 
 
-def cumulative_histogram(image: np.array) -> (np.array, np.array):
-    """Returns the cumulative histogram and list of bin edges of the image.
-    Assumes image is grayscale and has 8-bit color depth."""
+def histogram_8bit_grayscale(image: np.array) -> (np.array, np.array):
+    """Returns the histogram and list of bin edges for an array,
+    optimized for 8-bit grayscale images."""
+    return np.histogram(image, bins=256, range=(0,256))
+
+
+def cumulative_histogram_8bit_grayscale(image: np.array) -> (np.array, np.array):
+    """Returns the cumulative histogram and list of bin edges for an array,
+    optimized for 8-bit grayscale images."""
     #Regular histogram.
-    hist, bin_edges = np.histogram(image, bins=256, range=(0,256))
+    hist, bin_edges = histogram_8bit_grayscale(image)
     
     #Cumulative histogram based on regular histogram.
     c_hist = hist.cumsum()
@@ -44,9 +59,9 @@ def cumulative_histogram(image: np.array) -> (np.array, np.array):
     return c_hist, bin_edges
 
 
-def cumulative_histogram_plot(data: np.array, bin_edges: np.array) -> (Figure, Axes):
-    """Returns a bar plot of a cumulative histogram, given the data and
-    the edges of its bins."""
+def custom_histogram_plot(data: np.array, bin_edges: np.array) -> (Figure, Axes):
+    """Returns a custom bar plot optimized for histograms of cumulative
+    histograms."""
     #Preprocesses the data
     data_x = bin_edges[:-1]
     data_y = data
@@ -55,8 +70,8 @@ def cumulative_histogram_plot(data: np.array, bin_edges: np.array) -> (Figure, A
     BLACK = '#000000'
     GRAY = '#3f3f3f'
     SCALE = 1.05
-    LIM_X = data_x[-1] * SCALE
-    LIM_Y = data_y[-1] * SCALE
+    LIM_X = data_x.max() * SCALE
+    LIM_Y = data_y.max() * SCALE
     FONTFAMILY = 'serif'
     ARROWPROPS = dict(arrowstyle='->')
     ASPECT = 5/12
