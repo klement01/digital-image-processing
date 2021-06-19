@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Sums and displays the pixel values of a grayscale image.')
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'in_image',
         metavar='in',

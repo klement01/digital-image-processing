@@ -6,7 +6,7 @@ from collections import namedtuple
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Finds and displays the minimum and maximum pixel values of a grayscale image.')
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'in_image',
         metavar='in',

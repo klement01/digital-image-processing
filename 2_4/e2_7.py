@@ -8,8 +8,7 @@ from numpy import concatenate, ndarray
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Creates a video of the image being shifted horizontally"
-            " and circularly until the original state is reached again.")
+        description=__doc__)
     parser.add_argument(
         '--duration',
         dest='duration',

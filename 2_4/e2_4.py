@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Paints a 10 x 10 pixels white frame in the top left corner of the image.')
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'in_image',
         metavar='in',

@@ -6,7 +6,7 @@ from PIL import Image
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Mirror an image.")
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'operation',
         metavar='operation',
