@@ -89,7 +89,7 @@ def integral_image_representation(integral: np.array, top_left: [int, int] = [0,
     
     image = integral[top_y : bot_y + 1, top_x : bot_x + 1]
     image = image.astype(np.dtype('float64'))
-    image += image.min()
+    image -= image.min()
     image *= 255 / image.max()
     image = image.astype(np.dtype('uint8'))
     return image
