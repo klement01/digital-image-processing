@@ -25,7 +25,7 @@ def main():
 
 def reconstruct_from_integral(integral: np.array) -> np.array:
     """Returns the image that generated the integral image."""
-    integral = integral.astype(np.dtype('float64'))
+    integral = integral.astype(np.dtype('uint64'))
     
     flipped_integral = np.flipud(integral)
     flipped_integral = np.fliplr(flipped_integral)
