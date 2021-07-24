@@ -25,6 +25,23 @@ def main():
     cv.imwrite(args.out_image, reconstructed)
 
 
+def cos_sin_cache(M):
+    """Returns the appropriate cosine and sine for a value of mu using
+    a cache."""
+    cache = {}
+    mu = yield
+    while True:
+        k = mu % M
+        if k in cache:
+            mu = yield cache[k]
+        else:
+            a = 2 * np.pi * k / M
+            c = np.cos(a)
+            s = np.sin(a)
+            cache[k] = (c, s)
+            mu = yield c, s
+
+
 def DFT(g: np.array, forward: bool) -> np.array:
     """Performs a 1D Discrete Fourier Transform on a series of complex values.
     
@@ -34,23 +51,8 @@ def DFT(g: np.array, forward: bool) -> np.array:
     M = len(g)
     G = np.empty_like(g, dtype=complex)
     s = 1 / np.sqrt(M)
-    
-    def cos_sin_cache():
-        """Returns the appropriate cosine and sine for a value of m using
-        a cache."""
-        cache = {}
-        mu = yield
-        while True:
-            k = mu % M
-            if k in cache:
-                mu = yield cache[k]
-            else:
-                a = 2 * np.pi * k / M
-                c = np.cos(a)
-                s = np.sin(a)
-                cache[k] = (c, s)
-                mu = yield c, s
-    cs = cos_sin_cache()
+
+    cs = cos_sin_cache(M)
     next(cs)
     
     for m in range(M):
