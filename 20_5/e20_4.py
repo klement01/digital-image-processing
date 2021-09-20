@@ -50,7 +50,7 @@ def main():
     
     transf = prettify(transf_org.copy())
     if args.square:
-        transf = square(transf_org)
+        transf = square(transf)
     cv.imwrite(args.out_path, transf)
     
     if args.recon_path is not None:
@@ -60,13 +60,13 @@ def main():
 
 def get_transform_matrix(M: int) -> (np.array, np.array):
     """Returns M x M forward DCT transform matrix."""
-    t = np.full((M, M), 2, dtype='float64')
+    t = np.full((M, M), 2, dtype=np.float64)
     t = (t * np.arange(M) + 1) * np.arange(M).reshape(M, 1)
     t = np.cos(t * np.pi / (2 * M))
     
     t *= np.sqrt(2 / M)
     
-    c = np.ones((M, M), dtype='float64')
+    c = np.ones((M, M), dtype=np.float64)
     c[0] /= np.sqrt(2)
     t *= c
     
@@ -80,7 +80,7 @@ def dct_1d(g: np.array) -> np.array:
     
     M = len(g)
     s = np.sqrt(2 / M)
-    G = np.empty_like(g, dtype='float64')
+    G = np.empty_like(g, dtype=np.float64)
     
     for m in range(M):
         cm = 1
@@ -104,7 +104,7 @@ def idct_1d(G: np.array) -> np.array:
     
     M = len(G)
     s = np.sqrt(2 / M)
-    g = np.empty_like(G, dtype='float64')
+    g = np.empty_like(G, dtype=np.float64)
  
     for u in range(M):
         acc = 0
@@ -196,8 +196,17 @@ def idct(G: np.array, matrix_size: int = 0) -> np.array:
 
 def prettify(g: np.array) -> np.array:
     """Filters the image for better visualization."""
-    g = cv.normalize(src=g, dst=None, alpha=0, beta=255, norm_type=cv.NORM_MINMAX, dtype=cv.CV_8U)
-        
+    g = abs(g) + 1
+    g = np.log(g)
+    
+    g -= g.min()
+    g *= (2**16 - 1) / g.max()
+    
+    g = g.astype(np.uint16)
+    
+    if g.ndim == 3:
+        g = cv.cvtColor(g, cv.COLOR_BGR2GRAY)
+
     return g
 
 
