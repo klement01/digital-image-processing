@@ -20,7 +20,7 @@ def main():
         '-s', '--square',
         action='store_true',
         dest='square',
-        help='reshapes the Fourier transform into a square')
+        help='reshapes the transform into a square')
     parser.add_argument(
         '-g', '--grayscale',
         action='store_true',
