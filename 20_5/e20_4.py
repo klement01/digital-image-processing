@@ -196,10 +196,9 @@ def idct(G: np.array, matrix_size: int = 0) -> np.array:
 
 def prettify(g: np.array) -> np.array:
     """Filters the image for better visualization."""
-    g = abs(g) + 1
+    g = abs(g)
+    g += 1 - g.min()
     g = np.log(g)
-    
-    g -= g.min()
     g *= (2**16 - 1) / g.max()
     
     g = g.astype(np.uint16)
